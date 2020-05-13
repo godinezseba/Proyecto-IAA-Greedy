@@ -6,3 +6,6 @@ all: compile
 
 compile:
 	g++ src/main.cpp -o main -Wall
+
+clean:
+	rm main

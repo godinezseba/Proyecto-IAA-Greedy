@@ -1,4 +1,5 @@
-INPUT?=NL/NL4.txt
+N?=4
+INPUT=NL/NL$(N).txt
 RUN=./main < input/$(INPUT) > output/$(INPUT)
 
 all: compile

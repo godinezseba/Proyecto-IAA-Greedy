@@ -1,4 +1,5 @@
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -12,3 +13,26 @@ struct GreedyTournament {
     vector<int> trip; // positive = local, negative = visit
     vector<vector<int>> schedule; // a solution
 };
+
+void showGreedyTournament(GreedyTournament tournament) {
+    cout << "Ultimos recorridos" << endl;
+    for (auto &&i : tournament.trip) cout << i << " ";
+    cout << endl;
+
+    cout << "Ultimo rival" << endl;
+    for (auto &&i : tournament.lastRival) cout << i << " ";
+    cout << endl;
+
+    cout << "Temporal Schedule: \n";
+    // first show the name of the team
+    for(long unsigned int i = 0; i < tournament.schedule[0].size(); i++)
+        cout << "T" << (1+i) << " ";
+    cout << endl;
+
+    // print the matrix values
+    for (vector<int> &line : tournament.schedule) {
+        for(int &value : line)
+            cout << value << " ";
+        cout << endl;   
+    }
+}

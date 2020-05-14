@@ -25,6 +25,7 @@ int main(int argc, char const *argv[]){
     // give matrix to the algorithm
     solution = Greedy(distances);
     
+    //show solution
     showSolution(solution);
     return 0;
 }

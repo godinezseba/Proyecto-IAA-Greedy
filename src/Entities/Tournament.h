@@ -15,6 +15,7 @@ struct GreedyTournament {
 };
 
 void showGreedyTournament(GreedyTournament tournament) {
+    cout << "--------------------------" << endl;
     cout << "Ultimos recorridos" << endl;
     for (auto &&i : tournament.trip) cout << i << " ";
     cout << endl;
@@ -35,4 +36,5 @@ void showGreedyTournament(GreedyTournament tournament) {
             cout << value << " ";
         cout << endl;   
     }
+    cout << "--------------------------" << endl;
 }

@@ -4,9 +4,6 @@
 using namespace std;
 
 int main(int argc, char const *argv[]) {
-    vector<int> test(10);
-
-    for (auto i = test.begin(); i != test.end(); ++i) 
-        cout << *i << " "; 
+    cout << (bool)0 << endl; 
     return 0;
 }

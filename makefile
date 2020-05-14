@@ -1,6 +1,10 @@
-N?=4
-INPUT=NL/NL$(N).txt
-RUN=./main < input/$(INPUT) > output/$(INPUT)
+# variables para el input
+N=4
+TIPO=NL
+SEMILLA=0
+
+INPUT=$(TIPO)$(N).txt
+RUN=./main $(SEMILLA) $(N) < input/$(TIPO)/$(INPUT) > output/$(INPUT)
 
 all: compile
 	$(RUN)
@@ -9,4 +13,4 @@ compile:
 	g++ src/main.cpp -o main -Wall
 
 clean:
-	rm main
+	rm -f main

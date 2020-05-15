@@ -55,23 +55,26 @@ void addToSolution(int row, Game game, GreedyTournament &tournament, vector<int>
  * Function that determinate if the team can be a rival
  * @team: the real value of the team - 1
  * @rival: the value of a rival
- * @alreadyPlayed: teams that team already played
+ * @alreadyPlayed: teams that the team already played
  * @side: local=1 or visit=-1
  * @lastGame: the number of the lastRival - 1
 */
-bool canPlay(int team, int rival, vector<int> alreadyPlayed, int side, int lastGame){
+bool canPlay(int team, int rival, vector<int> alreadyPlayed, int lastGame){
     cout << "[DEBUG] values in canPlay()\n";
     cout << "team: " << team << ", rival: " << rival << ", lastGame: " << lastGame << endl;
 
     // iterators to validate a team
     vector<int>::iterator itrBegin = alreadyPlayed.begin();
     vector<int>::iterator itrEnd = alreadyPlayed.end();
+    for (auto &&i : alreadyPlayed) cout << i << " ";
+    cout << endl;
     // some pre conditions
     bool isNotLastGame = abs(lastGame) != rival;
     bool isFree = rival != -1;
     bool preCondition = isNotLastGame && isFree && team != rival;
+    bool findCondition = find(itrBegin, itrEnd, rival) == itrEnd && (find(itrBegin, itrEnd, -1*rival) == itrEnd);
     // the condition, the find function is the final part
-    bool condition = preCondition && find(itrBegin, itrEnd, side * rival) == itrEnd;
+    bool condition = preCondition && findCondition;
     return condition;
 }
 
@@ -80,7 +83,7 @@ bool canPlay(int team, int rival, vector<int> alreadyPlayed, int side, int lastG
 */
 void playLocal(vector<int> freeTeams, vector<int> alreadyPlayed, int team, int lastGame, vector<int> &priorityValues, vector<int> &priorityList, int value=0) {
     for(int &city : freeTeams) { // add the other freeTeams
-        if (canPlay(team + 1, city, alreadyPlayed, -1, lastGame)) {
+        if (canPlay(team + 1, city, alreadyPlayed, lastGame)) {
             priorityValues.insert(priorityValues.begin(), value);
             priorityList.insert(priorityList.begin(), -1 * city);
         }
@@ -97,7 +100,7 @@ void playVisit(vector<int> freeTeams, vector<int> alreadyPlayed, int team, int l
         // check if the team is free (not playing in this row or already played versus this team)
         // and is not the actual team
         // cout << "foreign team " << freeTeams[i] << endl;
-        if (freeTeams[i] != (team + 1) && canPlay(team + 1, freeTeams[i], alreadyPlayed, 1, lastGame)) {
+        if (freeTeams[i] != (team + 1) && canPlay(team + 1, freeTeams[i], alreadyPlayed, lastGame)) {
             // add team to the list in order
             vector<int>::iterator itrValue;
             vector<int>::iterator itrList = priorityList.begin();
@@ -184,7 +187,7 @@ Game selectRival(int team, vector<int> freeTeams, vector<vector<int>> distances,
     }
     
     // team have to play as local when the last trip was been visit
-    if (lastGame > 0 && tournament.trip[team] == -3) {
+    if (lastGame > 0 && tournament.trip[team] <= -3) {
         // save distance from the foreign city to our city
         int value = distances[abs(lastGame)-1][team];
         // save the near cities
@@ -198,7 +201,7 @@ Game selectRival(int team, vector<int> freeTeams, vector<vector<int>> distances,
     }
 
     // team have to play as visit when the last trip was been local
-    if (lastGame < 0 && tournament.trip[team] == 3) {
+    if (lastGame < 0 && tournament.trip[team] >= 3) {
         playVisit(freeTeams, alreadyPlayed, team, lastGame, priorityValues, priorityList, distances);
 
         cout << "[DEBUG] condition have to play as visit" << endl;
@@ -208,6 +211,7 @@ Game selectRival(int team, vector<int> freeTeams, vector<vector<int>> distances,
         cout << endl;
     }
     
+    bool addFlag = false;
     // add rival
     for (auto &&rival : priorityList){
         // TODO check if the iteration is posible
@@ -215,6 +219,7 @@ Game selectRival(int team, vector<int> freeTeams, vector<vector<int>> distances,
             if (tournament.trip[rival-1] < 3) {
                 game.local = rival;
                 game.visit = team + 1;
+                addFlag = true;
                 break;
             }
             // if is not posible we check the next value
@@ -222,10 +227,23 @@ Game selectRival(int team, vector<int> freeTeams, vector<vector<int>> distances,
             if (tournament.trip[abs(rival)-1] > -3) {
                 game.local = team + 1;
                 game.visit = abs(rival);
+                addFlag = true;
                 break;
             }
         }
     }
+    if (!addFlag) { // didnt add a team
+        int rival = priorityList[0]; // add the first element in the list
+        if (rival > 0){
+            game.local = rival;
+            game.visit = team + 1;
+        } else {
+            game.local = team + 1;
+            game.visit = abs(rival);
+        } 
+    }
+    
+
     return game;
 }
 
@@ -233,7 +251,7 @@ Game selectRival(int team, vector<int> freeTeams, vector<vector<int>> distances,
  * Auxiliar function to make recursion
 */
 void NGreedy(int row, GreedyTournament &tournament, vector<vector<int>> distances){
-    if (row == (int)tournament.schedule.size()) return; // stop condition
+    if (row == (int)tournament.schedule.size() / 2) return; // stop condition
     // just a auxiliar game
     Game game;
     // list of not selected teams
@@ -261,6 +279,16 @@ void NGreedy(int row, GreedyTournament &tournament, vector<vector<int>> distance
     NGreedy(row+1, tournament, distances);
 }
 
+/**
+ * generate the mirror of a scheduling
+*/
+void mirror(vector<vector<int>> &schedule) {
+    long unsigned int half = schedule.size() / 2;
+    for (long unsigned int i = 0; i < half; i++)
+        for (long unsigned int j = 0; (int)j < total; j++)
+            schedule[i+half][j] = -1 * schedule[i][j];
+}
+
 vector<vector<int>> Greedy(vector<vector<int>> distances){
     total = distances.size();
     GreedyTournament tournament;
@@ -271,5 +299,7 @@ vector<vector<int>> Greedy(vector<vector<int>> distances){
 
     NGreedy(0, tournament, distances);
 
+    // generate mirror
+    mirror(tournament.schedule);
     return tournament.schedule;
 }

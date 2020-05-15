@@ -60,14 +60,15 @@ void addToSolution(int row, Game game, GreedyTournament &tournament, vector<int>
  * @lastGame: the number of the lastRival - 1
 */
 bool canPlay(int team, int rival, vector<int> alreadyPlayed, int lastGame){
-    cout << "[DEBUG] values in canPlay()\n";
-    cout << "team: " << team << ", rival: " << rival << ", lastGame: " << lastGame << endl;
+    // cout << "[DEBUG] values in canPlay()\n";
+    // cout << "team: " << team << ", rival: " << rival << ", lastGame: " << lastGame << endl;
 
     // iterators to validate a team
     vector<int>::iterator itrBegin = alreadyPlayed.begin();
     vector<int>::iterator itrEnd = alreadyPlayed.end();
-    for (auto &&i : alreadyPlayed) cout << i << " ";
-    cout << endl;
+    // cout << "[DEBUG] already played: \n";
+    // for (auto &&i : alreadyPlayed) cout << i << " ";
+    // cout << endl;
     // some pre conditions
     bool isNotLastGame = abs(lastGame) != rival;
     bool isFree = rival != -1;
@@ -108,7 +109,7 @@ void playVisit(vector<int> freeTeams, vector<int> alreadyPlayed, int team, int l
                 itrList++;
                 if (distances[location][i] < *itrValue) break;
             }
-            cout << "add team " << freeTeams[i] << endl;
+            // cout << " [DEBUG] add team " << freeTeams[i] << endl;
             priorityList.insert(itrList, freeTeams[i]);
             priorityValues.insert(itrValue, distances[location][i]);
         }
@@ -134,9 +135,9 @@ Game selectRival(int team, vector<int> freeTeams, vector<vector<int>> distances,
     for (long unsigned int i = 0; i < schedule.size() && schedule[i][team] != 0; i++)
         alreadyPlayed.push_back(schedule[i][team]);
 
-    cout << "[DEBUG] Team " << team + 1 << " already play versus:\n";  
-    for (auto &&i : alreadyPlayed) cout << i << " ";
-    cout << endl;
+    // cout << "[DEBUG] Team " << team + 1 << " already play versus:\n";  
+    // for (auto &&i : alreadyPlayed) cout << i << " ";
+    // cout << endl;
     
     // team can continue being visit
     if (lastGame > 0 && tournament.trip[team] > -3) {
@@ -144,11 +145,11 @@ Game selectRival(int team, vector<int> freeTeams, vector<vector<int>> distances,
         // find rival considering team is in other city
         playVisit(freeTeams, alreadyPlayed, team, lastGame, priorityValues, priorityList, distances, postLastGame);
         
-        cout << "[DEBUG] condition can play visit" << endl;
-        for (auto &&i : priorityList) cout << i << " ";
-        cout << endl;
-        for (auto &&i : priorityValues) cout << i << " ";
-        cout << endl;
+        // cout << "[DEBUG] condition can play visit" << endl;
+        // for (auto &&i : priorityList) cout << i << " ";
+        // cout << endl;
+        // for (auto &&i : priorityValues) cout << i << " ";
+        // cout << endl;
 
         // condition doesn't have more teams
         if (priorityList.size() == 0) {
@@ -156,11 +157,11 @@ Game selectRival(int team, vector<int> freeTeams, vector<vector<int>> distances,
             // give lastGame the original form
             // save the near cities
             playLocal(freeTeams, alreadyPlayed, team, lastGame, priorityValues, priorityList, value);
-            cout << "[DEBUG] condition have to play local" << endl;
-            for (auto &&i : priorityList) cout << i << " ";
-            cout << endl;
-            for (auto &&i : priorityValues) cout << i << " ";
-            cout << endl;
+            // cout << "[DEBUG] condition have to play local" << endl;
+            // for (auto &&i : priorityList) cout << i << " ";
+            // cout << endl;
+            // for (auto &&i : priorityValues) cout << i << " ";
+            // cout << endl;
         }
     }
 
@@ -168,21 +169,21 @@ Game selectRival(int team, vector<int> freeTeams, vector<vector<int>> distances,
     if (lastGame <= 0 && tournament.trip[team] < 3) {
         playLocal(freeTeams, alreadyPlayed, team, lastGame, priorityValues, priorityList);
 
-        cout << "[DEBUG] condition can play local" << endl;
-        for (auto &&i : priorityList) cout << i << " ";
-        cout << endl;
-        for (auto &&i : priorityValues) cout << i << " ";
-        cout << endl;
+        // cout << "[DEBUG] condition can play local" << endl;
+        // for (auto &&i : priorityList) cout << i << " ";
+        // cout << endl;
+        // for (auto &&i : priorityValues) cout << i << " ";
+        // cout << endl;
         // condition doesn't have more teams
         if (priorityList.size() == 0) {
             // the team have to play as visit
             playVisit(freeTeams, alreadyPlayed, team, lastGame, priorityValues, priorityList, distances);
 
-            cout << "[DEBUG] condition have to play as visit" << endl;
-            for (auto &&i : priorityList) cout << i << " ";
-            cout << endl;
-            for (auto &&i : priorityValues) cout << i << " ";
-            cout << endl;
+            // cout << "[DEBUG] condition have to play as visit" << endl;
+            // for (auto &&i : priorityList) cout << i << " ";
+            // cout << endl;
+            // for (auto &&i : priorityValues) cout << i << " ";
+            // cout << endl;
         }
     }
     
@@ -193,22 +194,22 @@ Game selectRival(int team, vector<int> freeTeams, vector<vector<int>> distances,
         // save the near cities
         playLocal(freeTeams, alreadyPlayed, team, lastGame, priorityValues, priorityList, value);
 
-        cout << "[DEBUG] condition have to play as local" << endl;
-        for (auto &&i : priorityList) cout << i << " ";
-        cout << endl;
-        for (auto &&i : priorityValues) cout << i << " ";
-        cout << endl;
+        // cout << "[DEBUG] condition have to play as local" << endl;
+        // for (auto &&i : priorityList) cout << i << " ";
+        // cout << endl;
+        // for (auto &&i : priorityValues) cout << i << " ";
+        // cout << endl;
     }
 
     // team have to play as visit when the last trip was been local
     if (lastGame < 0 && tournament.trip[team] >= 3) {
         playVisit(freeTeams, alreadyPlayed, team, lastGame, priorityValues, priorityList, distances);
 
-        cout << "[DEBUG] condition have to play as visit" << endl;
-        for (auto &&i : priorityList) cout << i << " ";
-        cout << endl;
-        for (auto &&i : priorityValues) cout << i << " ";
-        cout << endl;
+        // cout << "[DEBUG] condition have to play as visit" << endl;
+        // for (auto &&i : priorityList) cout << i << " ";
+        // cout << endl;
+        // for (auto &&i : priorityValues) cout << i << " ";
+        // cout << endl;
     }
     
     bool addFlag = false;
@@ -271,7 +272,7 @@ void NGreedy(int row, GreedyTournament &tournament, vector<vector<int>> distance
         if (freeTeams[i] != -1) { // a team that is not selected in this row
             game = selectRival(i, freeTeams, distances, tournament);
             addToSolution(row, game, tournament, freeTeams);
-            showGreedyTournament(tournament);
+            // showGreedyTournament(tournament);
         }
     }
 

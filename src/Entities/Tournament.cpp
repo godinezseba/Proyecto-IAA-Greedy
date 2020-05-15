@@ -33,7 +33,7 @@ void showGreedyTournament(GreedyTournament tournament) {
     // print the matrix values
     for (vector<int> &line : tournament.schedule) {
         for(int &value : line)
-            cout << value << " ";
+            cout << ((value >= 0) ? " " : "") << value << " ";
         cout << endl;   
     }
     cout << "--------------------------" << endl;

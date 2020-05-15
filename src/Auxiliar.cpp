@@ -16,7 +16,7 @@ void showSolution(vector<vector<int>> solution) {
     // print the matrix values
     for (vector<int> &line : solution) {
         for(int &value : line)
-            cout << value << " ";
+            cout << ((value >= 0) ? " " : "") << value << " ";
         cout << endl;   
     }
 }

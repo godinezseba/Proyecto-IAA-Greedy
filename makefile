@@ -1,10 +1,10 @@
 # variables para el input
 N=4
-TIPO=NL
-SEMILLA=0
+TYPE=NL
+SEED=0
 
-INPUT=$(TIPO)$(N).txt
-RUN=./main $(SEMILLA) $(N) < input/$(TIPO)/$(INPUT) > output/$(INPUT)
+INPUT=$(TYPE)$(N).txt
+RUN=./main $(SEED) $(N) < input/$(TYPE)/$(INPUT) > output/$(INPUT)
 
 all: compile
 	$(RUN)

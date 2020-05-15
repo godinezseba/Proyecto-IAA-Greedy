@@ -68,9 +68,13 @@ void calculateDistancePenalty(vector<vector<int>> solution, vector<vector<int>> 
                 actual = oponentPost;
             }
             // sum to the trip
-            
+            if ((trip > 0 && oponent < 0) || (trip < 0 && oponent > 0)) trip = 0; // reset if necesary
+            if (oponent > 0) trip++;
+            else trip--;
+            if (trip > 3 || trip < -3) flagTrip = true;
         }
         if (actual != i) localDistance += distances[actual][i];
+        if (flagTrip) localDistance = localDistance*1.5;
 
         distance += localDistance;
         // cout << "[DEBUG] distancia hasta punto " << i << " " << distance << endl;
